@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction Dashboard</title>
+  <!-- Include your preferred styling framework or add custom styles here -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="Roxier3.js">
+</head>
+<body>
+
+  <h1>Transaction Dashboard</h1>
+
+  <div>
+    <label for="monthSelect">Select Month:</label>
+    <select id="monthSelect">
+      <option value="January">January</option>
+      <option value="February">February</option>
+      <option value="March" selected>March</option>
+      <option value="April">April</option>
+      <option value="May">May</option>
+      <option value="June">June</option>
+      <option value="July">July</option>
+      <option value="August">August</option>
+      <option value="September">September</option>
+      <option value="October">October</option>
+      <option value="November">November</option>
+      <option value="December">December</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="searchInput">Search Transaction:</label>
+    <input type="text" id="searchInput">
+    <button onclick="searchTransactions()">Search</button>
+    <button onclick="clearSearch()">Clear</button>
+  </div>
+
+  <table id="transactionsTable">
+    <!-- Table content will be dynamically added here using JavaScript -->
+  </table>
+
+  <div id="statistics">
+    <!-- Statistics will be dynamically added here using JavaScript -->
+  </div>
+
+  <div id="barChart">
+    <!-- Bar chart will be dynamically added here using JavaScript -->
+  </div>
+
+  <script>
+    // Your API base URL
+    const apiUrl = 'https://s3.amazonaws.com/roxiler.com/product_transaction.json';
+
+    // Function to fetch and display transactions based on selected month
+    function fetchTransactions() {
+      const monthSelect = document.getElementById('monthSelect');
+      const selectedMonth = monthSelect.value;
+
+      // Make API call to list transactions
+      // You should replace this with your actual API endpoint
+      fetch(`${apiUrl}/list-transactions?month=${selectedMonth}`)
+        .then(response => response.json())
+        .then(data => {
+          // Display transactions in the table
+          displayTransactions(data.transactions);
+        })
+        .catch(error => console.error('Error fetching transactions:', error));
+    }
+
+    // Function to display transactions in the table
+    function displayTransactions(transactions) {
+      const table = document.getElementById('transactionsTable');
+
+      // Clear existing table content
+      table.innerHTML = '';
+
+      // Iterate through transactions and create table rows
+      transactions.forEach(transaction => {
+        const row = table.insertRow();
+        row.insertCell(0).textContent = transaction.title;
+        row.insertCell(1).textContent = transaction.description;
+        row.insertCell(2).textContent = transaction.price;
+        // Add more cells as needed
+      });
+    }
+
+    // Function to search transactions based on user input
+    function searchTransactions() {
+      const searchInput = document.getElementById('searchInput').value;
+
+      // Make API call to search transactions
+      // You should replace this with your actual API endpoint
+      fetch(`${apiUrl}/list-transactions?search=${searchInput}`)
+        .then(response => response.json())
+        .then(data => {
+          // Display search results in the table
+          displayTransactions(data.transactions);
+        })
+        .catch(error => console.error('Error searching transactions:', error));
+    }
+
+    // Function to clear search and display initial transactions
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      fetchTransactions();
+    }
+
+    // Fetch transactions when the page loads
+    fetchTransactions();
+
+    // Add your code to implement statistics and bar chart based on other APIs
+
+  </script>
+
+</body>
+</html>
